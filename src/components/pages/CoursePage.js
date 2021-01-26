@@ -12,6 +12,7 @@ const CoursePage = (props) => {
   const schoolId = window.location.href.split("/")[4];
   const courseId = window.location.href.split("/")[6];
   const linkToSchool = `/schools/${schoolId}`;
+  const linkForAddDocument = `/schools/${schoolId}/courses/${courseId}/documents`;
 
   useEffect(() => {
     const getCourse = async () => {
@@ -61,7 +62,7 @@ const CoursePage = (props) => {
           Back to school menu
         </Link>
         &nbsp;&nbsp;
-        <Link to={linkToSchool} className="btn custom-btn">
+        <Link to={linkForAddDocument} className="btn custom-btn">
           Add Document
         </Link>
       </div>
@@ -99,9 +100,17 @@ const CoursePage = (props) => {
                           <h3 className="card-title">{name}</h3>
                           <a href="/">{link}</a>
                         </div>
-                        <div className="col-4">
+                        <div className="col-4 flex-column">
+                          <Link
+                            to={{
+                              pathname: `/schools/${schoolId}/courses/${courseId}/documents/${id}`,
+                            }}
+                            className="btn custom-btn mt-0"
+                          >
+                            Update
+                          </Link>
                           <button
-                            className="btn custom-btn2 mt-3"
+                            className="btn custom-btn2"
                             onClick={() => {
                               swal2
                                 .fire({

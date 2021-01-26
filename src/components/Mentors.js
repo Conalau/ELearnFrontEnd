@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Api from "./utils/Api";
 import Loading from "./utils/Loading";
 import swal from "sweetalert2";
+import { FaBirthdayCake } from "react-icons/fa";
 
 const Mentors = (school) => {
   const [mentors, setMentors] = useState([]);
@@ -46,27 +47,34 @@ const Mentors = (school) => {
             accessRights: 0,
           },
         }}
-        className="btn mt-5 custom-btn"
+        className="btn mt-5 custom-btn2"
       >
         Add Mentor
       </Link>
 
-      <ul className="mt-5 mr-5">
-        {mentors.map((mentor) => {
-          const { id, name, birthDate, photo } = mentor;
+      <div className="mt-5 mr-5 ml-5 row d-flex">
+        {mentors.length === 0 ? (
+          <h3 className="mt-5 text-info">No mentors in current school!</h3>
+        ) : (
+          <>
+            {mentors.map((mentor) => {
+              const { id, name, birthDate, photo } = mentor;
 
-          return (
-            <li key={id}>
-              <div className="card mb-3 mt-3">
-                <div className="row">
-                  <div className="card-body col-8 text-center">
-                    <h5 className="card-title mentors text-center">
-                      Name: {name}
-                    </h5>
-                    <p className="card-text">
-                      <small className="text-muted mentors">
-                        BirthDate: {birthDate.substr(0, 10)}
-                      </small>
+              return (
+                <div key={id} className="card mb-3 mt-3 col-4 mentors-card">
+                  <img
+                    src={apiImgPath + photo}
+                    className="card-img-top"
+                    alt="mentor"
+                  />
+                  <div className="card-body text-center">
+                    <h4 className="card-title mentors d-inline white">
+                      {name}
+                    </h4>
+                    <p className="card-text mt-2">
+                      <FaBirthdayCake className="white" />
+                      &nbsp;
+                      <span className="white">{birthDate.substr(0, 10)}</span>
                     </p>
                     <Link
                       to={{
@@ -76,12 +84,12 @@ const Mentors = (school) => {
                           accessRights: 0,
                         },
                       }}
-                      className="btn mt-5 custom-btn mr-5"
+                      className="btn mt-1 custom-btn mr-5"
                     >
-                      Update Mentor
+                      Update
                     </Link>
                     <button
-                      className="btn mt-5 custom-btn2"
+                      className="btn mt-1 custom-btn"
                       onClick={() => {
                         swal
                           .fire({
@@ -113,20 +121,15 @@ const Mentors = (school) => {
                           });
                       }}
                     >
-                      Delete Mentor
+                      Delete
                     </button>
                   </div>
-                  <img
-                    src={apiImgPath + photo}
-                    className="card-img-bottom col-4 h-25"
-                    alt="mentor"
-                  />
                 </div>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
+              );
+            })}
+          </>
+        )}
+      </div>
     </>
   );
 };

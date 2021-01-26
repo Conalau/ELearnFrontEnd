@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, useLocation } from "react-router-dom";
 import Navbar from "./common/Navbar";
 import HomePage from "./pages/HomePage";
 import SchoolsPage from "./pages/SchoolsPage";
@@ -16,11 +16,18 @@ import AddSubjectPage from "./pages/AddSubjectPage";
 import UpdateSchoolPage from "./pages/UpdateSchoolPage";
 import UpdateCoursePage from "./pages/UpdateCoursePage";
 import UpdateCataloguePage from "./pages/UpdateCataloguePage";
+import AddDocumentPage from "./pages/AddDocumentPage";
+import UpdateDocumentPage from "./pages/UpdateDocumentPage";
+import UpdateSubjectPage from "./pages/UpdateSubjectPage";
+import Footer from "./common/Footer";
 
 function App() {
+  const path = window.location.href.split("/")[3];
+  useLocation();
+
   return (
     <>
-      <header className="fixed-top">
+      <header className={path === "" ? "fixed-top" : "fixed-top shade"}>
         <Navbar />
       </header>
       <main>
@@ -53,6 +60,11 @@ function App() {
           />
           <Route
             exact
+            path="/schools/:schoolId/courses/:courseId/documents"
+            component={AddDocumentPage}
+          />
+          <Route
+            exact
             path="/schools/:schoolId/persons/:personId"
             component={UpdatePersonPage}
           />
@@ -71,9 +83,20 @@ function App() {
             path="/schools/:schoolId/catalogues/:catalogueId/update"
             component={UpdateCataloguePage}
           />
+          <Route
+            exact
+            path="/schools/:schoolId/courses/:courseId/documents/:documentId"
+            component={UpdateDocumentPage}
+          />
+          <Route
+            exact
+            path="/schools/:schoolId/subjects/:subjectId"
+            component={UpdateSubjectPage}
+          />
           <Route path="/*" component={NotFoundPage} />
         </Switch>
       </main>
+      <Footer />
     </>
   );
 }

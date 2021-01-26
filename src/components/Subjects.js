@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Api from "./utils/Api";
 import Loading from "./utils/Loading";
 import swal2 from "sweetalert2";
+import { MdSubject } from "react-icons/md";
 
 const Subjects = (school) => {
   const [subjects, setSubjects] = useState([]);
@@ -44,29 +45,43 @@ const Subjects = (school) => {
             schoolTitle: school.name,
           },
         }}
-        className="btn mt-5 custom-btn"
+        className="btn mt-5 custom-btn2"
       >
-        Add Subjects
+        Add Subject
       </Link>
 
-      <ul className="mt-5 mr-5">
-        {subjects.map((subject) => {
-          const { id, name } = subject;
+      <div className="mt-5 mr-5 ml-5 row d-flex">
+        {subjects.length === 0 ? (
+          <h3 className="mt-5 text-info">No subjects in current school!</h3>
+        ) : (
+          <>
+            {subjects.map((subject) => {
+              const { id, name } = subject;
 
-          return (
-            <li key={id}>
-              <div className="card mb-3 mt-3 p-2">
-                <div className="row">
-                  <div className="col-6">
-                    <div className="d-block">
-                      <small className="text-break">Name:</small>
-                      &nbsp;&nbsp;{name}
-                    </div>
+              return (
+                <div key={id} className="card mb-3 mt-3 col-3 subjects">
+                  <div className="d-block">
+                    <small className="text-break">
+                      <MdSubject className="yellow" />
+                    </small>
+                    &nbsp;&nbsp;{name}
                   </div>
 
-                  <div className="col-6">
+                  <div className="row justify-content-around mb-1">
+                    <Link
+                      to={{
+                        pathname: `/schools/${schoolID}/subjects/${id}/`,
+                        schoolData: {
+                          schoolTitle: school.name,
+                        },
+                      }}
+                      className="btn custom-btn mt-0"
+                    >
+                      Update
+                    </Link>
+
                     <button
-                      className="btn custom-btn2 mt-0"
+                      className="btn custom-btn mt-0"
                       onClick={() => {
                         swal2
                           .fire({
@@ -98,15 +113,15 @@ const Subjects = (school) => {
                           });
                       }}
                     >
-                      Delete Subject
+                      Delete
                     </button>
                   </div>
                 </div>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
+              );
+            })}
+          </>
+        )}
+      </div>
     </>
   );
 };

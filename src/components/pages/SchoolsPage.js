@@ -38,43 +38,36 @@ const SchoolsPage = () => {
       <h3 className="display-3 font-weight-bolder" id="school-title">
         Schools
       </h3>
-      <div className="underline mb-3"></div>
+      {/* <div className="underline mb-3"></div> */}
       <Link
         to={{
           pathname: linkToAddSchool,
         }}
-        className="btn mt-3 custom-btn mb-4"
+        className="btn mt-3 custom-btn2 mb-4"
       >
         Add School
       </Link>
 
-      <ul className="list-group school-cards">
+      <div className="school-cards row d-flex">
         {schools.map((school) => {
           const { id, name, photo } = school;
 
           return (
-            <li key={id}>
+            <div key={id} className="col-lg-6 ">
               <div className="card mb-3 mt-3">
                 <img
                   src={apiImgPath + photo}
                   className="card-img-top"
                   alt="school"
                 />
-                <div className="card-body">
-                  <h5 className="card-title">
+                <div className="card-body ">
+                  <h5 className="card-title minimum-height">
                     <a href={linkToSchool + school.id}>{name}</a>
                   </h5>
+                  <p className="card-text">
+                    Principal: {school.principal.name}
+                  </p>
                   <div className="row">
-                    <div className="col-6">
-                      <p className="card-text">
-                        Principal: {school.principal.name}
-                      </p>
-                      <p className="card-text">
-                        <small className="text-muted">
-                          Last updated 3 hours ago
-                        </small>
-                      </p>
-                    </div>
                     <div className="col-6">
                       <Link
                         to={{
@@ -82,10 +75,12 @@ const SchoolsPage = () => {
                         }}
                         className="btn custom-btn mt-0 mr-3"
                       >
-                        Update School
+                        Update
                       </Link>
+                    </div>
+                    <div className="col-6">
                       <button
-                        className="btn custom-btn2 mt-0"
+                        className="btn custom-btn mt-0"
                         onClick={() => {
                           swal2
                             .fire({
@@ -117,16 +112,16 @@ const SchoolsPage = () => {
                             });
                         }}
                       >
-                        Delete School
+                        Delete
                       </button>
                     </div>
                   </div>
                 </div>
               </div>
-            </li>
+            </div>
           );
         })}
-      </ul>
+      </div>
     </div>
   );
 };

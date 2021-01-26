@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import Api from "./utils/Api";
 import Loading from "./utils/Loading";
 import swal from "sweetalert2";
+import { MdSubject } from "react-icons/md";
+import { MdDescription } from "react-icons/md";
 
 const Courses = (school) => {
   const [courses, setCourses] = useState([]);
@@ -45,43 +47,50 @@ const Courses = (school) => {
             schoolTitle: school.name,
           },
         }}
-        className="btn mt-5 custom-btn"
+        className="btn mt-5 custom-btn2"
       >
-        Add Courses
+        Add Course
       </Link>
 
-      <ul className="mt-5 mr-5">
-        {courses.map((course) => {
-          const { id, name, subject, description } = course;
+      <div className="mt-5 mr-5 ml-5 row d-flex">
+        {courses.length === 0 ? (
+          <h3 className="mt-5 text-info">No courses in current school!</h3>
+        ) : (
+          <>
+            {courses.map((course) => {
+              const { id, name, subject, description } = course;
 
-          return (
-            <li key={id}>
-              <div className="card mb-3 mt-3 p-2">
-                <div className="row">
-                  <div className="col-8">
-                    <div className="d-block">
-                      <small className="text-break">Name:</small>&nbsp;&nbsp;
-                      <Link
-                        to={{
-                          pathname: linkToCourse + id,
-                          schoolData: {
-                            schoolTitle: school.name,
-                          },
-                        }}
-                      >
-                        {name}
-                      </Link>
-                    </div>
-                    <div className="d-block">
-                      <small className="text-break">Subject:</small>
-                      &nbsp;&nbsp;{subject.name}
-                    </div>
-                    <div className="d-block">
-                      <small className="text-break">Description:</small>{" "}
-                      &nbsp;&nbsp;{description}
-                    </div>
+              return (
+                <div key={id} className="card mb-3 mt-3 col-4 courses">
+                  <div className="d-block text-center link">
+                    <Link
+                      to={{
+                        pathname: linkToCourse + id,
+                        schoolData: {
+                          schoolTitle: school.name,
+                        },
+                      }}
+                    >
+                      {name}
+                    </Link>
                   </div>
-                  <div className="col-4">
+                  <div className="d-block">
+                    <small className="text-break">
+                      <MdSubject className="yellow" />
+                    </small>
+                    &nbsp;&nbsp;{subject.name}
+                  </div>
+                  <div className="d-block">
+                    <small className="text-break">
+                      <MdDescription className="yellow" />
+                    </small>
+                    &nbsp;&nbsp;
+                    {description.length > 33
+                      ? description.substr(0, 33) + "..."
+                      : description}
+                  </div>
+
+                  <div className="row">
                     <Link
                       to={{
                         pathname: `/schools/${schoolID}/courses/${id}/update`,
@@ -89,12 +98,13 @@ const Courses = (school) => {
                           schoolTitle: school.name,
                         },
                       }}
-                      className="btn custom-btn mt-0 mr-3"
+                      className="btn custom-btn mt-0 mr-5 ml-5"
                     >
-                      Update Course
+                      Update
                     </Link>
+
                     <button
-                      className="btn custom-btn2 mt-2"
+                      className="btn custom-btn mt-0 mr-5 ml-5"
                       onClick={() => {
                         swal
                           .fire({
@@ -126,15 +136,15 @@ const Courses = (school) => {
                           });
                       }}
                     >
-                      Delete Course
+                      Delete
                     </button>
                   </div>
                 </div>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
+              );
+            })}
+          </>
+        )}
+      </div>
     </>
   );
 };
