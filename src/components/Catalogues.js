@@ -3,12 +3,11 @@ import { Link } from "react-router-dom";
 import Api from "./utils/Api";
 import Loading from "./utils/Loading";
 import swal from "sweetalert2";
-import { SiGoogleclassroom } from "react-icons/si";
 
 const Catalogues = (school) => {
   const [catalogues, setCatalogues] = useState([]);
   const [loading, setLoading] = useState(true);
-  const schoolID = window.location.href.split("/")[4];
+  const schoolID = window.location.href.split("/")[4].split("#")[0];
   const linkToCatalogue = `/schools/${schoolID}/catalogues/`;
 
   useEffect(() => {
@@ -34,42 +33,44 @@ const Catalogues = (school) => {
 
   return (
     <>
-      <h2 className="mt-5 text-center">
-        <span id="secondary-title">School Classes</span>
-      </h2>
+      <section id="features" className="features">
+        <div className="container" data-aos="fade-up">
+          <div className="section-title">
+            <h2>Catalogues</h2>
+            <p>School Classes</p>
+          </div>
 
-      <Link
-        to={{
-          pathname: linkToCatalogue,
-          schoolData: {
-            schoolTitle: school.name,
-          },
-        }}
-        className="btn mt-5 custom-btn2"
-      >
-        Add School Class
-      </Link>
+          <div className="row" data-aos="zoom-in" data-aos-delay="100">
+            {catalogues.length === 0 ? (
+              <>
+                <h3 className="mt-5 text-info mb-5">
+                  No school classes in current school!
+                </h3>
+                <p className="mt-4 mb-5"></p>
+              </>
+            ) : (
+              <>
+                {catalogues.map((catalogue) => {
+                  const { id, name } = catalogue;
 
-      <ul className="mt-5 mr-5 ml-5">
-        {catalogues.length === 0 ? (
-          <h3 className="mt-5 text-info">
-            No school classes in current school!
-          </h3>
-        ) : (
-          <>
-            {catalogues.map((catalogue) => {
-              const { id, name } = catalogue;
+                  return (
+                    <div
+                      key={id}
+                      className={`col-10 ${
+                        catalogues.length < 2 ? "mt-5 mb-5" : ""
+                      }`}
+                    >
+                      <div
+                        className={`icon-box mt-2 ${
+                          catalogues.length < 3 ? "mb-4" : ""
+                        }`}
+                      >
+                        <i
+                          className="ri-price-tag-2-line"
+                          style={{ color: "#4233ff" }}
+                        ></i>
 
-              return (
-                <li key={id}>
-                  <div className="card mb-3 mt-3 ml-5 mr-5 p-2">
-                    <div className="row">
-                      <div className="col-8 mt-1">
-                        <div className="d-inline link">
-                          <small className="text-break">
-                            <SiGoogleclassroom className="yellow" />
-                          </small>
-                          &nbsp;&nbsp;
+                        <h3 id="course-title">
                           <Link
                             to={{
                               pathname: linkToCatalogue + id,
@@ -80,61 +81,72 @@ const Catalogues = (school) => {
                           >
                             {name}
                           </Link>
+                        </h3>
+
+                        <div className="ms-auto">
+                          <Link
+                            to={{
+                              pathname: `/schools/${schoolID}/catalogues/${id}/update`,
+                            }}
+                            className="get-started-btn"
+                          >
+                            Update
+                          </Link>
+                          &nbsp;&nbsp;
+                          <button
+                            className="get-started-btn border-0"
+                            onClick={() => {
+                              swal
+                                .fire({
+                                  title: `Are you sure you wish to delete ${name}?`,
+                                  text: "You won't be able to revert this!",
+                                  icon: "warning",
+                                  showCancelButton: true,
+                                  confirmButtonColor: "#3ec1d5",
+                                  cancelButtonColor: "#3f000f",
+                                  confirmButtonText:
+                                    "Yes, delete school class!",
+                                })
+                                .then(async (result) => {
+                                  if (result.isConfirmed) {
+                                    const response = await Api.delete(
+                                      `/schools/${schoolID}/catalogues/${id}`
+                                    );
+                                    if (response.status === 204) {
+                                      swal
+                                        .fire(
+                                          "Deleted!",
+                                          "Your school class has been deleted.",
+                                          "success"
+                                        )
+                                        .then(function () {
+                                          window.location = `/schools/${schoolID}`;
+                                        });
+                                    }
+                                  }
+                                });
+                            }}
+                          >
+                            Delete
+                          </button>
                         </div>
                       </div>
-                      <div className="col-4">
-                        <Link
-                          to={{
-                            pathname: `/schools/${schoolID}/catalogues/${id}/update`,
-                          }}
-                          className="btn custom-btn2 mt-0 mr-3"
-                        >
-                          Update
-                        </Link>
-                        <button
-                          className="btn custom-btn2 mt-0"
-                          onClick={() => {
-                            swal
-                              .fire({
-                                title: `Are you sure you wish to delete ${name}?`,
-                                text: "You won't be able to revert this!",
-                                icon: "warning",
-                                showCancelButton: true,
-                                confirmButtonColor: "#3ec1d5",
-                                cancelButtonColor: "#3f000f",
-                                confirmButtonText: "Yes, delete school class!",
-                              })
-                              .then(async (result) => {
-                                if (result.isConfirmed) {
-                                  const response = await Api.delete(
-                                    `/schools/${schoolID}/catalogues/${id}`
-                                  );
-                                  if (response.status === 204) {
-                                    swal
-                                      .fire(
-                                        "Deleted!",
-                                        "Your school class has been deleted.",
-                                        "success"
-                                      )
-                                      .then(function () {
-                                        window.location = `/schools/${schoolID}`;
-                                      });
-                                  }
-                                }
-                              });
-                          }}
-                        >
-                          Delete
-                        </button>
-                      </div>
                     </div>
-                  </div>
-                </li>
-              );
-            })}
-          </>
-        )}
-      </ul>
+                  );
+                })}
+              </>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <div className="why-us">
+        <div className="content text-center">
+          <Link to={linkToCatalogue} className="more-btn">
+            Add Class <i className="bx bx-chevron-right"></i>
+          </Link>
+        </div>
+      </div>
     </>
   );
 };

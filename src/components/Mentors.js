@@ -4,12 +4,13 @@ import Api from "./utils/Api";
 import Loading from "./utils/Loading";
 import swal from "sweetalert2";
 import { FaBirthdayCake } from "react-icons/fa";
+import { MdSchool } from "react-icons/md";
 
 const Mentors = (school) => {
   const [mentors, setMentors] = useState([]);
   const [loading, setLoading] = useState(true);
-  const schoolID = window.location.href.split("/")[4];
-  const linkToAddMentor = `/schools/${schoolID}/persons`;
+  const schoolID = window.location.href.split("/")[4].split("#")[0];
+  const linkToAddMentor = `/schools/${schoolID}/persons/0`;
   const apiImgPath = "http://localhost:54719/images/";
 
   useEffect(() => {
@@ -35,100 +36,129 @@ const Mentors = (school) => {
 
   return (
     <>
-      <h2 className="mt-5 text-center">
-        <span id="secondary-title">Mentors</span>
-      </h2>
+      <section id="trainers" className="trainers">
+        <div className="container" data-aos="fade-up">
+          <div className="section-title">
+            <h2>Mentors</h2>
+            <p>Trainers Data</p>
+          </div>
 
-      <Link
-        to={{
-          pathname: linkToAddMentor,
-          schoolData: {
-            schoolTitle: school.name,
-            accessRights: 0,
-          },
-        }}
-        className="btn mt-5 custom-btn2"
-      >
-        Add Mentor
-      </Link>
+          <div className="row" data-aos="zoom-in" data-aos-delay="100">
+            {mentors.length === 0 ? (
+              <>
+                <h3 className="mt-5 text-info mb-5">
+                  No mentors in current school!
+                </h3>
+                <p className="mb-3"></p>
+              </>
+            ) : (
+              <>
+                {mentors.map((mentor) => {
+                  const { id, name, birthDate, photo } = mentor;
 
-      <div className="mt-5 mr-5 ml-5 row d-flex">
-        {mentors.length === 0 ? (
-          <h3 className="mt-5 text-info">No mentors in current school!</h3>
-        ) : (
-          <>
-            {mentors.map((mentor) => {
-              const { id, name, birthDate, photo } = mentor;
-
-              return (
-                <div key={id} className="card mb-3 mt-3 col-4 mentors-card">
-                  <img
-                    src={apiImgPath + photo}
-                    className="card-img-top"
-                    alt="mentor"
-                  />
-                  <div className="card-body text-center">
-                    <h4 className="card-title mentors d-inline white">
-                      {name}
-                    </h4>
-                    <p className="card-text mt-2">
-                      <FaBirthdayCake className="white" />
-                      &nbsp;
-                      <span className="white">{birthDate.substr(0, 10)}</span>
-                    </p>
-                    <Link
-                      to={{
-                        pathname: `${linkToAddMentor}/${id}`,
-                        schoolData: {
-                          schoolTitle: school.name,
-                          accessRights: 0,
-                        },
-                      }}
-                      className="btn mt-1 custom-btn mr-5"
+                  return (
+                    <div
+                      key={id}
+                      className="col-lg-4 col-md-6 d-flex align-items-stretch"
                     >
-                      Update
-                    </Link>
-                    <button
-                      className="btn mt-1 custom-btn"
-                      onClick={() => {
-                        swal
-                          .fire({
-                            title: `Are you sure you wish to delete ${name}?`,
-                            text: "You won't be able to revert this!",
-                            icon: "warning",
-                            showCancelButton: true,
-                            confirmButtonColor: "#3ec1d5",
-                            cancelButtonColor: "#3f000f",
-                            confirmButtonText: "Yes, delete mentor!",
-                          })
-                          .then(async (result) => {
-                            if (result.isConfirmed) {
-                              const response = await Api.delete(
-                                `/schools/${schoolID}/mentors/${id}`
-                              );
-                              if (response.status === 204) {
+                      <div className="member">
+                        <img
+                          src={apiImgPath + photo}
+                          className="img-fluid"
+                          alt="mentor"
+                        />
+
+                        <div className="member-content">
+                          <h4>{name}</h4>
+
+                          <span>
+                            <MdSchool className="iconfont teach" />
+                            MENTOR
+                          </span>
+
+                          <span>
+                            <FaBirthdayCake className="iconfont" />
+                            {birthDate.substr(0, 10)}
+                          </span>
+
+                          <p>
+                            Lorem ipsum dolor, sit amet consectetur adipisicing
+                            elit. Temporibus cumque, perspiciatis velit fugiat
+                            suscipit delectus consectetur quam natus
+                            perferendis!
+                          </p>
+                        </div>
+
+                        <div className="trainer d-flex justify-content-around align-items-center">
+                          <div className="trainer-profile d-flex align-items-center">
+                            <Link
+                              to={{
+                                pathname: `${linkToAddMentor}/${id}`,
+                                schoolData: {
+                                  schoolTitle: school.name,
+                                  accessRights: 0,
+                                },
+                              }}
+                              className="get-started-btn"
+                            >
+                              Update
+                            </Link>
+                          </div>
+
+                          <div className="trainer-rank d-flex align-items-center">
+                            <button
+                              className="get-started-btn border-0"
+                              onClick={() => {
                                 swal
-                                  .fire(
-                                    "Deleted!",
-                                    "Your mentor has been deleted.",
-                                    "success"
-                                  )
-                                  .then(function () {
-                                    window.location = `/schools/${schoolID}`;
+                                  .fire({
+                                    title: `Are you sure you wish to delete ${name}?`,
+                                    text: "You won't be able to revert this!",
+                                    icon: "warning",
+                                    showCancelButton: true,
+                                    confirmButtonColor: "#3ec1d5",
+                                    cancelButtonColor: "#3f000f",
+                                    confirmButtonText: "Yes, delete mentor!",
+                                  })
+                                  .then(async (result) => {
+                                    if (result.isConfirmed) {
+                                      const response = await Api.delete(
+                                        `/schools/${schoolID}/mentors/${id}`
+                                      );
+                                      if (response.status === 204) {
+                                        swal
+                                          .fire(
+                                            "Deleted!",
+                                            "Your mentor has been deleted.",
+                                            "success"
+                                          )
+                                          .then(function () {
+                                            window.location = `/schools/${schoolID}`;
+                                          });
+                                      }
+                                    }
                                   });
-                              }
-                            }
-                          });
-                      }}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </>
-        )}
+                              }}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <div className="why-us">
+        <div className="content text-center">
+          <Link to={linkToAddMentor} className="more-btn">
+            Add Mentor <i className="bx bx-chevron-right"></i>
+          </Link>
+        </div>
       </div>
     </>
   );
