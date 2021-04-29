@@ -5,13 +5,13 @@ import { useGlobalUser } from "../utils/AuthContext";
 
 function Navbar() {
   const [isActive, setActive] = useState(false);
-  const { user } = useGlobalUser();
+  const { user, logout } = useGlobalUser();
+
+  console.log(user);
 
   const handleToggle = () => {
     setActive(!isActive);
   };
-
-  console.log(user);
 
   return (
     <div className="container d-flex align-items-center">
@@ -29,8 +29,12 @@ function Navbar() {
       >
         {user.auth ? (
           <ul>
-            <li >Hello, {user.name}!</li >&nbsp;&nbsp;
-            <li>Logout</li>
+            <li>Welcome, {user.name}</li>&nbsp;&nbsp;
+            <li>
+              <NavLink to="/schools" onClick={logout}>
+                Logout
+              </NavLink>
+            </li>
           </ul>
         ) : (
           <ul>

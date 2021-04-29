@@ -10,10 +10,8 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const linkToHome = `/`;
   const linkForPost = `/authentication/login`;
-  const { user, login } = useGlobalUser();
+  const { login } = useGlobalUser();
   const history = useHistory();
-
-  debugger;
 
   if (loading) {
     return <Loading key={0} />;
@@ -42,7 +40,7 @@ const LoginPage = () => {
               Password: "",
             }}
             onSubmit={async (userData) => {
-              console.log(userData);
+              console.log(`userData: ${JSON.stringify(userData)}`);
 
               setLoading(true);
               try {
@@ -55,19 +53,15 @@ const LoginPage = () => {
                       icon: "success",
                     })
                     .then(function () {
-                      console.log("lin55" + userData.Username);
-                      debugger;
-                      login(userData.Username);
-                      console.log(user);
+                      const roles = response.data.roles;
+                      login(userData.Username, roles);
 
                       history.push("/");
-
-                      //window.location = `/`;
                     });
                   console.log("success");
                 }
                 const userFromApi = response.data;
-                console.log(userFromApi);
+                console.log(`userFromApi: ${JSON.stringify(userFromApi)}`);
 
                 setLoading(false);
               } catch (error) {
@@ -100,7 +94,7 @@ const LoginPage = () => {
                   </label>
 
                   <Field
-                    type="text"
+                    type="password"
                     name="Password"
                     className="w-100 form-control"
                     placeholder="New Password"

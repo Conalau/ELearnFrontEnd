@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Api from "../utils/Api";
 import Loading from "../utils/Loading";
 import swal2 from "sweetalert2";
+import { useGlobalUser } from "../utils/AuthContext";
 
 const CoursePage = (props) => {
   const [course, setCourse] = useState([]);
@@ -13,6 +14,7 @@ const CoursePage = (props) => {
   const linkToSchool = `/schools/${schoolId}`;
   const linkForAddDocument = `/schools/${schoolId}/courses/${courseId}/documents`;
   const linkToMain = `/`;
+  const { user } = useGlobalUser();
 
   useEffect(() => {
     const getCourse = async () => {
@@ -124,54 +126,60 @@ const CoursePage = (props) => {
                                   {link}
                                 </a>
                               </p>
-                              <p>
-                                <Link
-                                  to={{
-                                    pathname: `/schools/${schoolId}/courses/${courseId}/documents/${id}`,
-                                  }}
-                                  className="get-started-btn"
-                                >
-                                  Update
-                                </Link>
-                                &nbsp;
-                                <button
-                                  className="get-started-btn border-0"
-                                  onClick={() => {
-                                    swal2
-                                      .fire({
-                                        title: `Are you sure you wish to delete ${name}?`,
-                                        text:
-                                          "You won't be able to revert this!",
-                                        icon: "warning",
-                                        showCancelButton: true,
-                                        confirmButtonColor: "#3ec1d5",
-                                        cancelButtonColor: "#3f000f",
-                                        confirmButtonText:
-                                          "Yes, delete document!",
-                                      })
-                                      .then(async (result) => {
-                                        if (result.isConfirmed) {
-                                          const response = await Api.delete(
-                                            `/schools/${schoolId}/courses/${courseId}/documents/${id}`
-                                          );
-                                          if (response.status === 204) {
-                                            swal2
-                                              .fire(
-                                                "Deleted!",
-                                                "Your mentor has been deleted.",
-                                                "success"
-                                              )
-                                              .then(function () {
-                                                window.location = `/schools/${schoolId}/courses/${courseId}`;
-                                              });
+                              {user.auth &&
+                              (user.roles.includes("admin") ||
+                                user.roles.includes("mentor")) ? (
+                                <p>
+                                  <Link
+                                    to={{
+                                      pathname: `/schools/${schoolId}/courses/${courseId}/documents/${id}`,
+                                    }}
+                                    className="get-started-btn"
+                                  >
+                                    Update
+                                  </Link>
+                                  &nbsp;
+                                  <button
+                                    className="get-started-btn border-0"
+                                    onClick={() => {
+                                      swal2
+                                        .fire({
+                                          title: `Are you sure you wish to delete ${name}?`,
+                                          text:
+                                            "You won't be able to revert this!",
+                                          icon: "warning",
+                                          showCancelButton: true,
+                                          confirmButtonColor: "#3ec1d5",
+                                          cancelButtonColor: "#3f000f",
+                                          confirmButtonText:
+                                            "Yes, delete document!",
+                                        })
+                                        .then(async (result) => {
+                                          if (result.isConfirmed) {
+                                            const response = await Api.delete(
+                                              `/schools/${schoolId}/courses/${courseId}/documents/${id}`
+                                            );
+                                            if (response.status === 204) {
+                                              swal2
+                                                .fire(
+                                                  "Deleted!",
+                                                  "Your mentor has been deleted.",
+                                                  "success"
+                                                )
+                                                .then(function () {
+                                                  window.location = `/schools/${schoolId}/courses/${courseId}`;
+                                                });
+                                            }
                                           }
-                                        }
-                                      });
-                                  }}
-                                >
-                                  Remove
-                                </button>
-                              </p>
+                                        });
+                                    }}
+                                  >
+                                    Remove
+                                  </button>
+                                </p>
+                              ) : (
+                                ""
+                              )}
                             </div>
                             <div className="col-lg-4 text-center order-1 order-lg-2">
                               <img
@@ -203,9 +211,14 @@ const CoursePage = (props) => {
             <i className="bx bx-chevron-left"></i> Back
           </Link>
           &nbsp;&nbsp;
-          <Link to={linkForAddDocument} className="more-btn">
-            Add <i className="bx bx-chevron-right"></i>
-          </Link>
+          {user.auth &&
+          (user.roles.includes("admin") || user.roles.includes("mentor")) ? (
+            <Link to={linkForAddDocument} className="more-btn">
+              Add <i className="bx bx-chevron-right"></i>
+            </Link>
+          ) : (
+            ""
+          )}
         </div>
       </div>
     </>

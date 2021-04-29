@@ -36,8 +36,21 @@ const RegisterPage = () => {
               Username: "",
               Email: "",
               Password: "",
+              ConfirmPassword: "",
             }}
             onSubmit={async (userData) => {
+              if (userData.Password !== userData.ConfirmPassword) {
+                swal2
+                  .fire({
+                    title: "Password and Confirm Password do not match!",
+                    text: "Choose something else!",
+                  })
+                  .then(function () {
+                    window.location = `/register`;
+                  });
+                  return;
+              }
+
               setLoading(true);
               try {
                 const response = await Api.post(linkForPost, userData);
@@ -64,7 +77,7 @@ const RegisterPage = () => {
                 if (response.status === 409) {
                   swal2
                     .fire({
-                      title: `${response.data.message}`,
+                      title: `${response.data.message} in database `,
                       text: "Choose something else!",
                     })
                     .then(function () {
@@ -124,12 +137,30 @@ const RegisterPage = () => {
                   </label>
 
                   <Field
-                    type="text"
+                    type="password"
                     name="Password"
                     className="w-100 form-control"
                     placeholder="New Password"
                     required
                     id="password"
+                  />
+                </div>
+
+                <div className="form-group d-flex flex-row">
+                  <label
+                    htmlFor="confirmPassword"
+                    className="col-sm-2 col-form-label"
+                  >
+                    Confirm Password:
+                  </label>
+
+                  <Field
+                    type="password"
+                    name="ConfirmPassword"
+                    className="w-100 form-control"
+                    placeholder="New Password"
+                    required
+                    id="confirmPassword"
                   />
                 </div>
 

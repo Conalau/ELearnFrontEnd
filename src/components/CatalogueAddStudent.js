@@ -120,7 +120,7 @@ const CatalogueAddStudent = ({ catalogueName }) => {
                     });
                 }
 
-                setLoading(true);
+                setLoading(false);
               }
             }}
           >

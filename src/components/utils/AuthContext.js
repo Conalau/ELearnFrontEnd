@@ -1,19 +1,27 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useReducer } from "react";
 
 const UserContext = React.createContext();
+let reducer = (userInfo, newInfo) => {
+  return {
+    ...userInfo,
+    ...newInfo,
+  };
+};
+const initialState = { name: "", auth: false, roles: ["guest"] };
+const localState = JSON.parse(localStorage.getItem("user"));
 
-/* const UserProvider = ({ children }) => {
-  debugger;
-  const [user, setUser] = useState({ name: "", auth: false, roles: ["guest"] });
-  const [user, setUser] = useState();
+const UserProvider = ({ children }) => {
+  const [user, setUser] = useReducer(reducer, localState || initialState);
 
-  //console.log(children);
+  useEffect(() => {
+    localStorage.setItem("user", JSON.stringify(user));
+  }, [user]);
 
-  const login = (name) => {
+  const login = (userName, userRoles) => {
     setUser({
-      name: name,
+      name: userName,
       auth: true,
-      roles: ["guest"],
+      roles: userRoles,
     });
   };
 
@@ -26,14 +34,14 @@ const UserContext = React.createContext();
   };
 
   return (
-    <UserContext.Provider >
+    <UserContext.Provider value={{ user, login, logout }}>
       {children}
     </UserContext.Provider>
   );
-}; */
+};
 
 export const useGlobalUser = () => {
   return useContext(UserContext);
 };
 
-export { UserContext /* UserProvide */ };
+export { UserContext, UserProvider };
